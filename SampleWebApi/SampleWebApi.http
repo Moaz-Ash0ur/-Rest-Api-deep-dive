@@ -1,0 +1,86 @@
+@baseURL = http://localhost:5116
+
+@productId = 2779ee47-10b0-4bd7-8342-404006aa1392
+@productId2 = 82191018-9a47-46ee-a9e8-e411c9e7c7f1
+
+### 
+OPTIONS {{baseUrl}}/api/products
+
+### 
+HEAD {{baseUrl}}/api/products/{{productId}}
+
+###
+GET {{baseUrl}}/api/products?page=1&pageSize=5
+
+###
+GET {{baseUrl}}/api/products/{{productId}}?includeReviews=true
+
+###
+GET {{baseUrl}}/api/products/{{productId}}
+
+###
+POST {{baseUrl}}/api/products/CreateProductReview/{{productId2}}/reviews
+Content-Type: application/json
+
+{
+  "reviewer": "Kevin Kelo",
+  "stars": 3
+}
+
+
+###
+POST {{baseUrl}}/api/products/CreateProduct
+Content-Type: application/json
+
+{
+      "name": "MoazTest",
+      "price": 20.21     
+}
+
+
+###
+PUT {{baseUrl}}/api/products/{{productId2}}
+Content-Type: application/json
+
+{
+    "name": "chocolate bar",
+    "price": 3.50
+}
+
+###
+PATCH {{baseUrl}}/api/products/{{productId}} 
+Content-Type: application/json-patch+json
+
+[
+  {
+    "op": "replace",
+    "path": "/price",
+    "value": 2.99
+  },
+]
+
+### DELETE
+DELETE {{baseUrl}}/api/products/{{productId}}
+
+###
+POST {{baseUrl}}/api/products/process
+
+@JobId = b079ad59-f94a-4ab2-b584-cd55d60eac29
+
+###
+GET {{baseUrl}}/api/products/status/{{JobId}}
+
+
+### GET
+GET {{baseUrl}}/api/products/csv
+
+
+###
+GET {{baseUrl}}/api/products/physical-csv-file
+
+###
+GET {{baseUrl}}/api/products/products-legacy
+
+###
+GET {{baseUrl}}/api/products/legacy-products
+
