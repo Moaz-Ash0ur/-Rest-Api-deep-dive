@@ -29,7 +29,7 @@ It simulates an in-memory `ProductRepository` with related `ProductReview` data 
 
 ## 📦 Technologies
 
-- **.NET 8 / ASP.NET Core Web API**
+- **.NET 9 / ASP.NET Core Web API**
 - **C#**
 - **In-memory Repository Pattern**
 - **JSON Patch**
@@ -38,31 +38,37 @@ It simulates an in-memory `ProductRepository` with related `ProductReview` data 
 
 ---
 
+
 ## 📁 Project Structure
+
+```text
 RestApiDeepDive/
 │
 ├── Controllers/
-│ └── ProductController.cs
+│   └── ProductController.cs
 │
 ├── Middlewares/
-│ └── ErrorHandlingMiddleware.cs
+│   └── ErrorHandlingMiddleware.cs
 │
 ├── Models/
-│ ├── Product.cs
-│ ├── ProductReview.cs
-│ ├── Requests/
-│ │ ├── CreateProductRequest.cs
-│ │ ├── UpdateProductRequest.cs
-│ │ └── CreateProductReviewRequest.cs
-│ └── Responses/
-│ ├── ProductResponse.cs
-│ ├── ProductReviewResponse.cs
-│ └── PagedResult.cs
+│   ├── Product.cs
+│   ├── ProductReview.cs
+│   ├── Requests/
+│   │   ├── CreateProductRequest.cs
+│   │   ├── UpdateProductRequest.cs
+│   │   └── CreateProductReviewRequest.cs
+│   └── Responses/
+│       ├── ProductResponse.cs
+│       ├── ProductReviewResponse.cs
+│       └── PagedResult.cs
 │
 ├── Repositories/
-│ └── ProductRepository.cs
+│   └── ProductRepository.cs
 │
 └── Program.cs
+
+
+
 
 
 
