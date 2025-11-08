@@ -18,6 +18,12 @@ GET {{baseUrl}}/api/products/{{productId}}?includeReviews=true
 ###
 GET {{baseUrl}}/api/products/{{productId}}
 
+
+###
+GET {{baseUrl}}/api/v2/products/{{productId}}
+
+
+
 ###
 POST {{baseUrl}}/api/products/CreateProductReview/{{productId2}}/reviews
 Content-Type: application/json

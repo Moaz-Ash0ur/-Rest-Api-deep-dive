@@ -5,12 +5,15 @@ using SampleWebApi.Model;
 using SampleWebApi.Repos;
 using SampleWebApi.Request;
 using SampleWebApi.Response;
+using SampleWebApi.Response.V1;
 using System.Text;
 
-namespace SampleWebApi.Controllers
+namespace SampleWebApi.Controllers.V1
 {
-    [Route("api/Products")]
-    [ApiController]
+    [ApiController] 
+    [ApiVersion("1.0")]
+   // [Route("api/products")]
+    [Route("api/v{version:apiVersion}/products")]
     public class ProductController : ControllerBase
     {
 
@@ -112,7 +115,7 @@ namespace SampleWebApi.Controllers
 
             return CreatedAtRoute(routeName: nameof(GetProductById),
                                    routeValues: 
-                                   new { productId = productId, incincludeReviewslude = true },
+                                   new { productId, incincludeReviewslude = true },
                                    value: ProductReviewResponse.FromModel(productReview));
         }
 

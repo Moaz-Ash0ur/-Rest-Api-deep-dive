@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using SampleWebApi.CustomMiddleware;
 using SampleWebApi.Repos;
 using System.Configuration;
@@ -31,7 +33,16 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-builder.Services.AddSingleton<ProductRepository>();  
+builder.Services.AddSingleton<ProductRepository>();
+
+
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+    options.ApiVersionReader = new UrlSegmentApiVersionReader(); // /api/v1/prod..
+});
 
 
 var app = builder.Build();
@@ -50,6 +61,11 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapGet("/", () => "Hello from my Web API with Swagger!");
+
+
+
+
+
 
 app.UseRequestLogging();
 

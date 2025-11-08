@@ -1,6 +1,6 @@
 ﻿using SampleWebApi.Model;
 
-namespace SampleWebApi.Response
+namespace SampleWebApi.Response.V1
 {
     public class ProductResponse
     {
