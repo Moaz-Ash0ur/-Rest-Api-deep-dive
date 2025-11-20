@@ -3,11 +3,30 @@
 @productId = 2779ee47-10b0-4bd7-8342-404006aa1392
 @productId2 = 82191018-9a47-46ee-a9e8-e411c9e7c7f1
 
+
+###
+GET {{baseUrl}}/openapi/v1.json
+
+###
+GET {{baseUrl}}/openapi/v2.json
+
+
 ### 
 OPTIONS {{baseUrl}}/api/products
 
 ### 
 HEAD {{baseUrl}}/api/products/{{productId}}
+
+###
+GET {{baseUrl}}/api/products
+tenantId: TenantA
+x-api-key: TenantAKey
+
+
+###
+GET {{baseUrl}}/api/products/getDoc/123
+
+
 
 ###
 GET {{baseUrl}}/api/products?page=1&pageSize=5

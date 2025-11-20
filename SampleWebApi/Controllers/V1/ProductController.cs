@@ -1,21 +1,33 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using SampleWebApi.Filters;
 using SampleWebApi.Model;
 using SampleWebApi.Repos;
 using SampleWebApi.Request;
 using SampleWebApi.Response;
 using SampleWebApi.Response.V1;
+using SampleWebApi.Response.V2;
 using System.Text;
+using ProductResponse = SampleWebApi.Response.V1.ProductResponse;
 
 namespace SampleWebApi.Controllers.V1
 {
     [ApiController] 
     [ApiVersion("1.0")]
-   // [Route("api/products")]
+    //[Route("api/products")]
     [Route("api/v{version:apiVersion}/products")]
+    [TrackActionTimeFilter]
+    [Tags("Products")]
     public class ProductController : ControllerBase
     {
+        /*
+         
+         ما أصاب عبدا هم ولا حزن فقال : اللهم إني عبدك وابن عبدك وابن أمتك ناصيتي بيدك ماض في حكمك عدل في قضاؤك ، أسألك بكل اسم هو لك سميت به نفسك أو أنزلته في كتابك أو علمته أحدا من خلقك أو استأثرت به في علم الغيب عندك أن تجعل القرآن ربيع قلبي و نور صدري وجلاء حزني وذهاب همي ، إلا أذهب الله همه و حزنه وأبدله مكانه فرجا
+         
+         
+         */
 
         private readonly ProductRepository _repository;
 
@@ -58,14 +70,14 @@ namespace SampleWebApi.Controllers.V1
         }
 
 
-
-        [HttpGet("{productId:guid}", Name = "GetProductById")]
+        [HttpGet("{productId:guid}")]
         public ActionResult<ProductResponse> GetProductById(Guid productId, bool includeReviews = false)
         {
             var product = _repository.GetProductById(productId);
 
             if (product is null)
-                return NotFound($"Product with Id '{productId}' not found");
+               return NotFound($"Product with Id '{productId}' not found");
+
 
             List<ProductReview>? reviews = null;
 
@@ -80,6 +92,12 @@ namespace SampleWebApi.Controllers.V1
 
 
         [HttpPost("CreateProduct")]
+        [Consumes("application/json")]
+        [ProducesResponseType<ProductResponse>(StatusCodes.Status201Created)]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
+        [EndpointSummary("Creates a new Product")]
+        [EndpointDescription("Creates a new Product and returns the created result.")]
         public IActionResult CreateProduct(CreateProductRequest request)
         {
             if (_repository.ExistsByName(request.Name))

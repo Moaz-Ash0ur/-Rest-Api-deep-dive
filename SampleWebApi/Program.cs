@@ -1,72 +1,55 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Versioning;
-using SampleWebApi.CustomMiddleware;
+using SampleWebApi;
+using SampleWebApi.Filters;
 using SampleWebApi.Repos;
-using System.Configuration;
-using System.Text.Json.Serialization;
+using Scalar.AspNetCore;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-
-//builder.Services.AddControllers(options =>
-//{
-//    options.ReturnHttpNotAcceptable = true;//402 Format Not Supported
-//})
-//.AddXmlSerializerFormatters();
-
-builder.Services.AddControllers()
-    //.AddNewtonsoftJson(options =>
-    //{
-    //    options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
-    //})
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-    });
-
-
-
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-
-builder.Services.AddSingleton<ProductRepository>();
-
-
-builder.Services.AddApiVersioning(options =>
-{
-    options.DefaultApiVersion = new ApiVersion(1, 0);
-    options.AssumeDefaultVersionWhenUnspecified = true;
-    options.ReportApiVersions = true;
-    options.ApiVersionReader = new UrlSegmentApiVersionReader(); // /api/v1/prod..
-});
+builder.Services.AddApplicationServices(builder.Configuration);
 
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
 }
 
-app.UseHttpsRedirection();
+app.UseAuthentication();
 
 app.UseAuthorization();
 
+app.UseExceptionHandler();
+
+app.UseStatusCodePages();
+
 app.MapControllers();
 
-app.MapGet("/", () => "Hello from my Web API with Swagger!");
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+     
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/openapi/v1.json", "Product API V1");
+        options.SwaggerEndpoint("/openapi/v2.json", "Product API V2");
 
+        options.EnableDeepLinking();// if have more one tag
+        options.DisplayRequestDuration();
+        options.EnableFilter();// enable filter by tag
+    });
 
+    app.MapScalarApiReference();
+}
 
-
-
-
-app.UseRequestLogging();
+//using (var scope = app.Services.CreateScope())
+//{
+//    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+//    await AppDbContextInitializer.InitializeAsync(context);
+//}
 
 app.Run();
+
+

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using SampleWebApi.Model;
@@ -16,16 +17,16 @@ namespace SampleWebApi.Controllers.V2
     [Route("api/v{version:apiVersion}/products")]
     public class ProductController : ControllerBase
     {
-
+         
         private readonly ProductRepository _repository;
 
         public ProductController(ProductRepository repository)
         {
             _repository = repository;
-        }
+        } 
 
        
-        [HttpGet("{productId:guid}", Name = "GetProductById")]
+        [HttpGet("{productId:guid}")]
         public ActionResult<ProductResponse> GetProductById(Guid productId, bool includeReviews = false)
         {
             var product = _repository.GetProductById(productId);
