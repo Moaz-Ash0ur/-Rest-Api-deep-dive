@@ -38,6 +38,11 @@ namespace SampleWebApi.Repos
 
         public int GetProductsCount() => _products.Count();
 
+        public List<Product> GetProducts(int page = 1, int pageSize = 10)
+        {
+            return _products.ToList();
+        }
+
         public List<Product> GetProductsPage(int page = 1, int pageSize = 10)
         {
             var products = _products.Skip((page - 1) * pageSize)

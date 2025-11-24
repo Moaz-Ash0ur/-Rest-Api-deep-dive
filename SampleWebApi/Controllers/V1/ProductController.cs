@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using SampleWebApi.Filters;
 using SampleWebApi.Model;
 using SampleWebApi.Repos;
@@ -24,16 +25,20 @@ namespace SampleWebApi.Controllers.V1
     {
         /*
          
-         ما أصاب عبدا هم ولا حزن فقال : اللهم إني عبدك وابن عبدك وابن أمتك ناصيتي بيدك ماض في حكمك عدل في قضاؤك ، أسألك بكل اسم هو لك سميت به نفسك أو أنزلته في كتابك أو علمته أحدا من خلقك أو استأثرت به في علم الغيب عندك أن تجعل القرآن ربيع قلبي و نور صدري وجلاء حزني وذهاب همي ، إلا أذهب الله همه و حزنه وأبدله مكانه فرجا
+         ما أصاب عبدا هم ولا حزن فقال : اللهم إني عبدك وابن عبدك وابن أمتك ناصيتي بيدك ماض في حكمك عدل في قضاؤك ، 
+        أسألك بكل اسم هو لك سميت به نفسك أو أنزلته في كتابك أو علمته أحدا من خلقك أو استأثرت به في علم الغيب عندك 
+        أن تجعل القرآن ربيع قلبي و نور صدري وجلاء حزني وذهاب همي ، إلا أذهب الله همه و حزنه وأبدله مكانه فرجا
          
-         
+      
          */
 
         private readonly ProductRepository _repository;
+        private readonly IMemoryCache _cache;
 
-        public ProductController(ProductRepository repository)
+        public ProductController(ProductRepository repository , IMemoryCache memoryCache)
         {
             _repository = repository;
+            _cache = memoryCache;
         }
 
 
@@ -49,6 +54,27 @@ namespace SampleWebApi.Controllers.V1
         {
             return _repository.ExistsById(productId) ? Ok() : NotFound();
         }
+
+
+        [HttpGet("GetAll")]
+        public IActionResult GetAllProducts()
+        {
+            var products =  _cache.GetOrCreate("products",  entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
+
+                return  _repository.GetProducts();
+            });
+
+            var result = ProductResponse.FromModels(_repository.GetProducts());
+
+            return Ok(result);
+
+        }
+
+
+
+
 
         [HttpGet]
         public IActionResult GetPaged(int page = 1, int pageSize = 10)

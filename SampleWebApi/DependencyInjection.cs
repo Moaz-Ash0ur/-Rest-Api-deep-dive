@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using SampleWebApi.BackgorundServices;
 using SampleWebApi.OpenApi;
 using SampleWebApi.Repos;
 using System;
@@ -28,12 +29,29 @@ namespace SampleWebApi
                     .AddControllerWithJsonConfiguration()
                     // .AddValidation()
                     //   .AddDatabase(configuration)
-                    .AddJwtAuthentication(configuration);
+                    .AddJwtAuthentication(configuration)
                 //    .AddAuthorizationPolicies();
                  //   .AddBusinessServices();
+                 .AddInMemoryCache()
+                 .AddBackgroundService();
 
             return services;
         }
+
+        public static IServiceCollection AddBackgroundService(this IServiceCollection services)
+        {
+            services.AddHostedService<DataSyncService>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddInMemoryCache(this IServiceCollection services)
+        {
+            services.AddMemoryCache(options => options.SizeLimit = 100);
+
+            return services;
+        }
+
 
         public static IServiceCollection AddCustomProblemDetails(this IServiceCollection services)
         {
